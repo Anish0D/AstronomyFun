@@ -42,6 +42,8 @@ class GalaxyDataset(Dataset):
 
         if self.transform:
             image = self.transform(image)
+        else:
+            image = transforms.ToTensor()(image)
 
         return image, label
 
@@ -94,10 +96,15 @@ class GCNN(nn.Module):
 ## Loss function and optimizer
 model = GCNN().to(device)
 loss_calc = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.01)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 ## Setting up the Training YAY
 model.train()
+
+for batch in train_loader:
+    x, y = batch
+    print("Shape of one batch of images:", x.shape)
+    break
 
 ## Training Loop :)
 accuracies = []
