@@ -56,7 +56,7 @@ transform = transforms.Compose([
 ])
 
 galaxy_dataset = GalaxyDataset(images, labels, transform=transform)
-train_loader = DataLoader(galaxy_dataset, batch_size=64, shuffle=True)
+train_loader = DataLoader(galaxy_dataset, batch_size=16, shuffle=True)
 
 class GCNN(nn.Module):
     def __init__(self, classes=10):
@@ -67,12 +67,12 @@ class GCNN(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(in_channels=64, out_channels=256, kernel_size=3, padding=1)
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.adaptive_pool = nn.AdaptiveAvgPool2d((8, 8))
+        self.adaptive_pool = nn.AdaptiveAvgPool2d((4, 4))
 
         ## Applying 2 hidden and 1 output layers for the data to flow through
         ## the dropout command is in order to strengthen the NN, by forcing all neurons to be relied on
         ## it also allows for the NN to learn more specific features!!
-        self.fc1 = nn.Linear(256*8*8, 512)
+        self.fc1 = nn.Linear(256*4*4, 512)
         self.dropout = nn.Dropout(0.5)
         self.fc2 = nn.Linear(512, 128)
         self.fc3 = nn.Linear(128, 10)
@@ -94,7 +94,7 @@ class GCNN(nn.Module):
 ## Loss function and optimizer
 model = GCNN().to(device)
 loss_calc = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.01)
+optimizer = optim.Adam(model.parameters(), lr=0.01)
 
 ## Setting up the Training YAY
 model.train()
