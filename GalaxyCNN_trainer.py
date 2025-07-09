@@ -14,7 +14,7 @@ from PIL import Image
 ## Using my CPU
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-with h5py.File('Galaxy10_DECals.h5', 'r') as hf:
+with h5py.File('Galaxy10_small.h5', 'r') as hf:
     images = hf['images'][:]   # Shape: (17736, 256, 256, 3)
     labels = hf['ans'][:]      # Shape: (17736,)
 
@@ -58,7 +58,7 @@ transform = transforms.Compose([
 ])
 
 galaxy_dataset = GalaxyDataset(images, labels, transform=transform)
-train_loader = DataLoader(galaxy_dataset, batch_size=16, shuffle=True)
+train_loader = DataLoader(galaxy_dataset, batch_size=64, shuffle=True)
 
 class GCNN(nn.Module):
     def __init__(self, classes=10):
@@ -96,7 +96,7 @@ class GCNN(nn.Module):
 ## Loss function and optimizer
 model = GCNN().to(device)
 loss_calc = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.SGD(model.parameters(), lr=0.001)
 
 ## Setting up the Training YAY
 model.train()
