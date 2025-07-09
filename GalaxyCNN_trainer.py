@@ -14,9 +14,9 @@ from PIL import Image
 ## Using my CPU
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-with h5py.File('Galaxy10_DECals.h5', 'r') as f:
-    images = f['images'][:]   # Shape: (17736, 256, 256, 3)
-    labels = f['ans'][:]      # Shape: (17736,)
+with h5py.File('Galaxy10_DECals.h5', 'r') as hf:
+    images = hf['images'][:]   # Shape: (17736, 256, 256, 3)
+    labels = hf['ans'][:]      # Shape: (17736,)
 
 # Convert images to float32 for processing
 images = images.astype(np.float32)
